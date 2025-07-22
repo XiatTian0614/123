@@ -45,36 +45,36 @@ int main() {
 以下為非遞迴版本的程式碼：
 ```cpp
 #include <iostream>
-#include <cmath>
-using namespace std;
+
+const int maxstack = 100000;
+
 int Function(int m, int n) {
-    if (m == 0) 
-    {
-        return n + 1;
+    int stack[maxstack];
+    int top = 0;
+    stack[top++] = m;
+
+    while (top > 0) {
+        m = stack[--top];
+
+        if (m == 0) {
+            n += 1;
+        } else if (n == 0) {
+            stack[top++] = m - 1;
+            n = 1;
+        } else {
+            stack[top++] = m - 1;
+            stack[top++] = m;
+            n -= 1;
+        }
     }
-    if  (m == 1) 
-    {
-        return n + 2;
-    }
-    if  (m == 2) 
-    {
-        return 2 * n + 3;
-    }
-    if  (m == 3) 
-    {
-        return pow(2, n + 3) - 3;
-    }
-    else 
-    {
-        return -1;
-    }
+
+    return n;
 }
 
 int main() {
-    int m,n;
-    cout << "輸入 m 與 n: "<< endl;
+    int m, n;
     cin >> m >> n;
-    cout << "輸出為:" << Function( m, n) << endl;
+    cout << Function(m, n) << endl;
     return 0;
 }
 
