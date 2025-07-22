@@ -25,19 +25,20 @@ using namespace std;
 
 
 int Function(int m, int n) {
-    if (m == 0) 
+    if (m == 0) //如果m=0的情況
     {
         return n + 1;
     }
-    if (n == 0) 
+    if (n == 0) //當n=0的情況，重新呼叫Function(m - 1, 1)
     {
         return Function(m - 1, 1);
     }
-    return Function(m - 1, Function(m, n - 1));
+    return Function(m - 1, Function(m, n - 1));//當都沒有符合的情況，重新呼叫Function(m - 1, Function(m, n - 1))
 }
-
 int main() {
-    int m = 2, n = 1;
+    int m,n;
+    cout << "輸入M與N: "<< endl;
+    cin >> m >> n;
     cout << "輸出為: " << Function(m, n) << endl;
     return 0;
 }
@@ -78,7 +79,6 @@ int main() {
     cout << "輸出為: " << Function(m, n) << endl;
     return 0;
 }
-
 ```
 ## 效能分析
 
@@ -101,8 +101,12 @@ int main() {
 ### 編譯與執行指令
 
 ```shell
-$ g++ -o ackermann main.cpp
-$ ./ackermann
+g++ -o hw1_1 hw1_1.c++
+.\hw1_1
+```
+```shell
+g++ -o hw1_2 hw1_2.c++
+.\hw1_2
 ```
 
 ### 結論
@@ -143,38 +147,36 @@ $ ./ackermann
 以下為程式碼：
 ```cpp
 #include <iostream>
-#include <vector>
+#include <cstring>
+
 using namespace std;
 
-vector<vector<char>> powerset(vector<char> S) {
-    if (S.empty()) {
-        return { {} };
+void printSubset(char* subset, int length) {    // 輸出子集合的函數
+    cout << "(";
+    for (int i = 0; i < length; ++i) {
+        cout << subset[i];                      // 輸出子集合中的每個元素
     }
-    char first = S[0];
-    S.erase(S.begin());
+    cout << ")" << endl;                        // 輸出子集合結束
+}
 
-    vector<vector<char>> other = powerset(S);
-
-    vector<vector<char>> all;
-    for (auto subset : other) {
-        subset.insert(subset.begin(), first);
-        all.push_back(subset);
+void generatePowerSet(char* S, int n, char* subset, int subsetSize, int index) {    // 遞迴產生 power set 的函數
+    if (index == n) {   // 遞迴終止條件：當 index ==n ，列印目前子集合
+        printSubset(subset, subsetSize);
+        return;
     }
 
-    other.insert(other.end(), all.begin(), all.end());
-    return other;
+    // 遞迴情況 1：不包含當前元素 S[index]
+    generatePowerSet(S, n, subset, subsetSize, index + 1);
+    // 遞迴情況 2：包含當前元素 S[index]
+    subset[subsetSize] = S[index];      // 加入當前元素到子集合中
+    generatePowerSet(S, n, subset, subsetSize + 1, index + 1);
 }
 
 int main() {
-    vector<char> S = {'a', 'b', 'c'};
-    vector<vector<char>> result = powerset(S);
-    for (auto subset : result) {
-        cout << "(";
-        for (char c : subset) {
-            cout << c;
-        }
-        cout << ")" << endl;
-    }
+    char S[] = {'a', 'b', 'c'};
+    int n = sizeof(S) / sizeof(S[0]);
+    char subset[10]; 
+    generatePowerSet(S, n, subset, 0, 0);
 
     return 0;
 }
@@ -197,8 +199,8 @@ int main() {
 ### 編譯與執行指令
 
 ```shell
-$ g++ -o ackermann main.cpp
-$ ./ackermann
+g++ -o hw1_3 hw1_3.c++
+.\hw1_3
 ```
 
 ### 結論
@@ -216,4 +218,4 @@ $ ./ackermann
 
 2.當集合長度增加時，時間與空間消耗呈指數成長，效能下降明顯。
 
-3.遞迴過深可能導致 stack overflow（如 n > 20）。
+3.遞迴過深可能導致 stack overflow。
